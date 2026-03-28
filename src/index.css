@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  
+  html { font-size: 14px; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #f8fafc;
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg
+           hover:bg-brand-700 transition-colors duration-150 shadow-sm;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-white text-slate-700 text-sm font-medium rounded-lg
+           border border-slate-200 hover:bg-slate-50 transition-colors duration-150 shadow-sm;
+  }
+  .card {
+    @apply bg-white rounded-xl border border-slate-200 shadow-sm;
+  }
+  .input {
+    @apply w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white
+           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
+           placeholder:text-slate-400 transition-all duration-150;
+  }
+  .badge-green {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700;
+  }
+  .badge-yellow {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700;
+  }
+  .badge-red {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700;
+  }
+  .badge-blue {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700;
+  }
+  .badge-gray {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600;
+  }
+}
