@@ -20,14 +20,14 @@ export interface Opportunity {
   status: OpportunityStatus
   description: string
   pdfUrl?: string
-  matchScore?: number          // 0-100 — calculated by AI (from srt-fbo-scraper logic)
+  matchScore?: number // 0-100 — calculated by AI (from srt-fbo-scraper logic)
   aiAnalysis?: BidAnalysis
   savedAt?: string
 }
 
 export interface BidAnalysis {
   summary: string
-  viabilityScore: number       // 0-100
+  viabilityScore: number // 0-100
   requirements: string[]
   risks: string[]
   draftProposal: string
@@ -43,7 +43,7 @@ export interface CompanyProfile {
   uei?: string
   naicsCodes: string[]
   capabilities: string[]
-  certifications: string[]     // SBA 8(a), HUBZone, SDVOSB, WOSB…
+  certifications: string[] // SBA 8(a), HUBZone, SDVOSB, WOSB…
   pastPerformance: string[]
   state: string
 }
@@ -53,7 +53,7 @@ export interface DashboardStats {
   highMatch: number
   mediumMatch: number
   savedOpportunities: number
-  deadlinesSoon: number        // closing in next 7 days
+  deadlinesSoon: number // closing in next 7 days
 }
 
 export interface FilterState {
@@ -62,7 +62,7 @@ export interface FilterState {
   agency: string
   noticeType: NoticeType | ''
   setAside: string
-  deadlineDays: number | null  // 7, 14, 30, null=all
+  deadlineDays: number | null // 7, 14, 30, null=all
   matchScore: MatchScore | ''
 }
 
@@ -84,7 +84,14 @@ export interface SamOpportunityRaw {
   classificationCode: string
   active: string
   award?: { date: string; amount: string; awardee: { name: string } }
-  pointOfContact: Array<{ fax: string; type: string; email: string; phone: string; title: string; fullName: string }>
+  pointOfContact: Array<{
+    fax: string
+    type: string
+    email: string
+    phone: string
+    title: string
+    fullName: string
+  }>
   description: string
   organizationHierarchy: { l1Name: string; l2Name: string }
   placeOfPerformance?: { city: { name: string }; state: { code: string } }

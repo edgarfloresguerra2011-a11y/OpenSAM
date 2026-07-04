@@ -8,7 +8,7 @@ export default {
       },
       colors: {
         brand: {
-          50:  '#eff6ff',
+          50: '#eff6ff',
           100: '#dbeafe',
           200: '#bfdbfe',
           400: '#60a5fa',

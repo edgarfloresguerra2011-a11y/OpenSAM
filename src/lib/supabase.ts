@@ -1,13 +1,31 @@
-import { createClient } from '@supabase/supabase-js'
+// Supabase client with reactivity-aware auth state handling.
+// The browser only ever sees VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+// (the anon key is safe to expose when RLS policies are correctly scoped).
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
+import { createClient, type Session, type SupabaseClient } from '@supabase/supabase-js'
+import { supabaseAnonKey, supabaseUrl, isDemoMode } from './env'
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('[Supabase] Missing env vars — running in demo mode')
+let _client: SupabaseClient | null = null
+
+export function getSupabase(): SupabaseClient {
+  if (_client) return _client
+
+  _client = createClient(
+    supabaseUrl || 'https://placeholder.supabase.co',
+    supabaseAnonKey || 'placeholder-anon-key',
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        flowType: 'pkce',
+      },
+    },
+  )
+  return _client
 }
 
-export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key',
-)
+export const supabase = getSupabase()
+
+export type { Session }
+export { isDemoMode }

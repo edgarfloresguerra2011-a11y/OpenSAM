@@ -1,0 +1,7 @@
+{
+  "version": "5",
+  "remote": {
+    "https://esm.sh/@google/genai@1.5.0": "e7788d328a8f4d7de8cc44b0dc150b9a708ca6be64e7c1a95c5bc6f541981669",
+    "https://esm.sh/@supabase/supabase-js@2.45.0": "36ae57c3f2dc3f94fd122a846b40a87114d29bb2f47e910cb46bee5575febf2e"
+  }
+}

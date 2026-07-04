@@ -1,5 +1,5 @@
 import type { Opportunity } from '../../types'
-import { formatDistanceToNow, format, isPast, differenceInDays } from 'date-fns'
+import { format, isPast, differenceInDays } from 'date-fns'
 import { Bookmark, BookmarkCheck, ExternalLink, Zap } from 'lucide-react'
 
 interface Props {
@@ -10,9 +10,13 @@ interface Props {
 }
 
 function MatchBadge({ score }: { score: number }) {
-  if (score >= 70) return <span className="badge-green">● {score}% Match</span>
-  if (score >= 40) return <span className="badge-yellow">● {score}% Match</span>
-  return <span className="badge-red">● {score}% Match</span>
+  const cls = score >= 70 ? 'badge-green' : score >= 40 ? 'badge-yellow' : 'badge-red'
+  const label = score >= 70 ? 'High match' : score >= 40 ? 'Medium match' : 'Low match'
+  return (
+    <span className={cls} aria-label={`${label}: ${score} percent`}>
+      ● {score}% Match
+    </span>
+  )
 }
 
 function DeadlineBadge({ deadline }: { deadline: string }) {
@@ -21,22 +25,48 @@ function DeadlineBadge({ deadline }: { deadline: string }) {
   const past = isPast(date)
   const days = differenceInDays(date, new Date())
 
-  if (past) return <span className="badge-gray">Closed</span>
-  if (days <= 7) return <span className="badge-red">⚑ {days}d left</span>
-  if (days <= 14) return <span className="badge-yellow">{days}d left</span>
-  return <span className="badge-gray">{format(date, 'MMM d, yyyy')}</span>
+  if (past)
+    return (
+      <span className="badge-gray" aria-label="Closed">
+        Closed
+      </span>
+    )
+  if (days <= 7)
+    return (
+      <span className="badge-red" aria-label={`${days} days left to respond`}>
+        ⚑ {days}d left
+      </span>
+    )
+  if (days <= 14)
+    return (
+      <span className="badge-yellow" aria-label={`${days} days left to respond`}>
+        {days}d left
+      </span>
+    )
+  return (
+    <span className="badge-gray" aria-label={`Due ${format(date, 'MMM d, yyyy')}`}>
+      {format(date, 'MMM d, yyyy')}
+    </span>
+  )
 }
 
 export function OpportunityCard({ opportunity: opp, saved, onSave, onAnalyze }: Props) {
+  const titleId = `opp-title-${opp.id}`
   return (
-    <div className="card p-5 hover:shadow-md transition-shadow duration-200 flex flex-col gap-4">
+    <article
+      className="card flex flex-col gap-4 p-5 transition-shadow duration-200 hover:shadow-md"
+      aria-labelledby={titleId}
+    >
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-1">
+        <div className="min-w-0 flex-1">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-widest text-slate-400">
             {opp.agency}
           </p>
-          <h3 className="text-sm font-semibold text-slate-900 leading-snug line-clamp-2">
+          <h3
+            id={titleId}
+            className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900"
+          >
             {opp.title}
           </h3>
         </div>
@@ -48,12 +78,24 @@ export function OpportunityCard({ opportunity: opp, saved, onSave, onAnalyze }: 
       </div>
 
       {/* Meta */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs text-slate-500">
-        <div><span className="text-slate-400">Sol #</span> {opp.solicitationNumber}</div>
-        <div><span className="text-slate-400">NAICS</span> {opp.naicsCode}</div>
-        <div><span className="text-slate-400">Type</span> {opp.noticeType}</div>
-        <div><span className="text-slate-400">Place</span> {opp.placeOfPerformance}</div>
-      </div>
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs text-slate-500">
+        <div>
+          <dt className="sr-only text-slate-400 sm:not-sr-only sm:inline">Sol #</dt>{' '}
+          <dd className="inline">{opp.solicitationNumber}</dd>
+        </div>
+        <div>
+          <dt className="sr-only text-slate-400 sm:not-sr-only sm:inline">NAICS</dt>{' '}
+          <dd className="inline">{opp.naicsCode}</dd>
+        </div>
+        <div>
+          <dt className="sr-only text-slate-400 sm:not-sr-only sm:inline">Type</dt>{' '}
+          <dd className="inline">{opp.noticeType}</dd>
+        </div>
+        <div>
+          <dt className="sr-only text-slate-400 sm:not-sr-only sm:inline">Place</dt>{' '}
+          <dd className="inline">{opp.placeOfPerformance}</dd>
+        </div>
+      </dl>
 
       {/* Set-aside */}
       {opp.setAside && (
@@ -63,39 +105,48 @@ export function OpportunityCard({ opportunity: opp, saved, onSave, onAnalyze }: 
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+      <div className="flex items-center justify-between border-t border-slate-100 pt-2">
         <DeadlineBadge deadline={opp.responseDeadline} />
 
         <div className="flex items-center gap-1">
           {onSave && (
             <button
               onClick={() => onSave(opp)}
-              className="p-1.5 rounded-md text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition-colors"
-              title={saved ? 'Remove from saved' : 'Save opportunity'}
+              className="rounded-md p-1.5 text-slate-400 transition-colors hover:bg-brand-50 hover:text-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              aria-label={saved ? 'Remove from saved' : 'Save opportunity'}
+              aria-pressed={saved}
             >
-              {saved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+              {saved ? (
+                <BookmarkCheck className="h-4 w-4" aria-hidden="true" />
+              ) : (
+                <Bookmark className="h-4 w-4" aria-hidden="true" />
+              )}
             </button>
           )}
-          <a
-            href={opp.pdfUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="p-1.5 rounded-md text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition-colors"
-            title="View on SAM.gov"
-          >
-            <ExternalLink className="w-4 h-4" />
-          </a>
+          {opp.pdfUrl && (
+            <a
+              href={opp.pdfUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-md p-1.5 text-slate-400 transition-colors hover:bg-brand-50 hover:text-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              title="View on SAM.gov"
+              aria-label={`View ${opp.title} on SAM.gov (opens in new tab)`}
+            >
+              <ExternalLink className="h-4 w-4" aria-hidden="true" />
+            </a>
+          )}
           {onAnalyze && (
             <button
               onClick={() => onAnalyze(opp)}
-              className="btn-primary py-1.5 px-3 text-xs ml-1"
+              className="btn-primary ml-1 px-3 py-1.5 text-xs"
+              aria-label={`Analyze ${opp.title} with AI`}
             >
-              <Zap className="w-3.5 h-3.5" />
+              <Zap className="h-3.5 w-3.5" aria-hidden="true" />
               Analyze
             </button>
           )}
         </div>
       </div>
-    </div>
+    </article>
   )
 }

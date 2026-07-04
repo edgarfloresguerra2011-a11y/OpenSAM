@@ -1,7 +1,10 @@
 import type { DashboardStats } from '../../types'
 import { TrendingUp, Target, Clock, Bookmark } from 'lucide-react'
 
-interface Props { stats: DashboardStats; loading?: boolean }
+interface Props {
+  stats: DashboardStats
+  loading?: boolean
+}
 
 interface StatCardProps {
   label: string
@@ -13,15 +16,25 @@ interface StatCardProps {
 
 function StatCard({ label, value, icon: Icon, color, loading }: StatCardProps) {
   return (
-    <div className="card p-5 flex items-center gap-4">
-      <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${color}`}>
-        <Icon className="w-5 h-5" />
+    <div className="card flex items-center gap-4 p-5">
+      <div
+        className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${color}`}
+        aria-hidden="true"
+      >
+        <Icon className="h-5 w-5" />
       </div>
       <div>
         <p className="text-2xl font-bold text-slate-900">
-          {loading ? <span className="inline-block w-8 h-6 bg-slate-100 rounded animate-pulse" /> : value}
+          {loading ? (
+            <span
+              className="inline-block h-6 w-8 animate-pulse rounded bg-slate-100"
+              aria-label="Loading"
+            />
+          ) : (
+            value
+          )}
         </p>
-        <p className="text-xs text-slate-500 font-medium">{label}</p>
+        <p className="text-xs font-medium text-slate-500">{label}</p>
       </div>
     </div>
   )
@@ -29,7 +42,11 @@ function StatCard({ label, value, icon: Icon, color, loading }: StatCardProps) {
 
 export function StatsBar({ stats, loading }: Props) {
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div
+      className="grid grid-cols-2 gap-4 lg:grid-cols-4"
+      role="region"
+      aria-label="Dashboard statistics"
+    >
       <StatCard
         label="Total Opportunities"
         value={stats.totalOpportunities}
